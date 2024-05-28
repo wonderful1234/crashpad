@@ -44,33 +44,41 @@ if (ANDROID)
     )
 endif (ANDROID)
 
-add_executable(handler main.cc)
-target_sources(handler PRIVATE ${CRASHPAD_HANDLER_LIBRARY_FILES})
-target_compile_features(handler PUBLIC cxx_std_17)
-target_include_directories(handler PRIVATE ..)
-target_link_libraries(handler PRIVATE client tools compat snapshot minidump)
+if (HANDLER STREQUAL "INTEGRATED")
+    add_library(handler STATIC ${CRASHPAD_HANDLER_LIBRARY_FILES})
+    target_compile_features(handler PUBLIC cxx_std_17)
+    target_link_libraries(handler PRIVATE client tools compat snapshot minidump)
+    target_include_directories(handler PUBLIC ..)
+else ()
+    add_executable(handler main.cc)
+    set_property(TARGET handler PROPERTY ENABLE_EXPORTS 1)
+    target_sources(handler PRIVATE ${CRASHPAD_HANDLER_LIBRARY_FILES})
+    target_compile_features(handler PUBLIC cxx_std_17)
+    target_include_directories(handler PRIVATE ..)
+    target_link_libraries(handler PRIVATE client tools compat snapshot minidump)
 
-if (APPLE)
-    target_link_libraries(handler PUBLIC -lbsm)
-endif (APPLE)
+    if (APPLE)
+        target_link_libraries(handler PUBLIC -lbsm)
+    endif (APPLE)
 
-if (WIN32)
-    target_link_libraries(handler PUBLIC crashpad_getopt)
-    set_target_properties(handler PROPERTIES WIN32_EXECUTABLE TRUE)
+    if (WIN32)
+        target_link_libraries(handler PUBLIC crashpad_getopt)
+        set_target_properties(handler PROPERTIES WIN32_EXECUTABLE TRUE)
 
-    add_executable(handler_console main.cc)
-    target_sources(handler_console PRIVATE ${CRASHPAD_HANDLER_LIBRARY_FILES})
-    target_compile_features(handler_console PUBLIC cxx_std_17)
-    target_include_directories(handler_console PRIVATE ..)
-    target_link_libraries(handler_console PRIVATE client tools compat snapshot minidump crashpad_getopt)
-endif (WIN32)
+        add_executable(handler_console main.cc)
+        target_sources(handler_console PRIVATE ${CRASHPAD_HANDLER_LIBRARY_FILES})
+        target_compile_features(handler_console PUBLIC cxx_std_17)
+        target_include_directories(handler_console PRIVATE ..)
+        target_link_libraries(handler_console PRIVATE client tools compat snapshot minidump crashpad_getopt)
+    endif (WIN32)
 
-if (ANDROID)
-    if (CUSTOM_CRASHPAD_HANDLER_DESTINATION)
-        add_custom_command(TARGET handler POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            $<TARGET_FILE:handler>
-            ${CUSTOM_CRASHPAD_HANDLER_DESTINATION}
-        )
-    endif (CUSTOM_CRASHPAD_HANDLER_DESTINATION)
-endif (ANDROID)
+    if (ANDROID)
+        if (CUSTOM_CRASHPAD_HANDLER_DESTINATION)
+            add_custom_command(TARGET handler POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy
+                    $<TARGET_FILE:handler>
+                    ${CUSTOM_CRASHPAD_HANDLER_DESTINATION}
+            )
+        endif (CUSTOM_CRASHPAD_HANDLER_DESTINATION)
+    endif (ANDROID)
+endif ()
