@@ -75,9 +75,9 @@ endif (WIN32)
 if (ANDROID)
     if (CUSTOM_CRASHPAD_HANDLER_DESTINATION)
         add_custom_command(TARGET handler POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy
-                $<TARGET_FILE:handler>
-                ${CUSTOM_CRASHPAD_HANDLER_DESTINATION}
+            COMMAND ${CMAKE_COMMAND} -E copy
+            $<TARGET_FILE:handler>
+            ${CUSTOM_CRASHPAD_HANDLER_DESTINATION}
         )
     endif (CUSTOM_CRASHPAD_HANDLER_DESTINATION)
 endif (ANDROID)
