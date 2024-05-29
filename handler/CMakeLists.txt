@@ -43,6 +43,7 @@ if (ANDROID)
         crashpad_handler_main.cc
     )
 endif (ANDROID)
+
 # Used to implement a work-around for launching the Crashpad handler stored in an APK. 
 if (CRASHPAD_HANDLER_GENERATE_STATIC_LIB)
     add_library(handlerlib STATIC ${CRASHPAD_HANDLER_LIBRARY_FILES})
