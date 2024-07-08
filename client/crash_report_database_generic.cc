@@ -34,6 +34,14 @@ namespace crashpad {
 
 namespace {
 
+std::string GetTimeStr() {
+    time_t now = time(nullptr);
+    tm* now_tm = localtime(&now);
+    char buffer[16] = {};
+    strftime(buffer, sizeof(buffer), "%Y%m%d%H%M%S", now_tm);
+    return std::string(buffer);
+}
+
 base::FilePath ReplaceFinalExtension(
     const base::FilePath& path,
     const base::FilePath::StringType extension) {
@@ -621,8 +629,10 @@ base::FilePath CrashReportDatabaseGeneric::ReportPath(const UUID& uuid,
   const std::string uuid_string = uuid.ToString();
 #endif
 
+std::string str = GetTimeStr();
+
   return base_dir_.Append(kReportDirectories[state])
-      .Append(uuid_string + kCrashReportExtension);
+      .Append(uuid_string +"-"+ str + kCrashReportExtension);
 }
 
 OperationStatus CrashReportDatabaseGeneric::LocateAndLockReport(
