@@ -35,7 +35,7 @@
 #include "util/misc/uuid.h"
 #include "util/stream/base94_output_stream.h"
 #include "util/stream/log_output_stream.h"
-#include "util/stream/zlib_output_stream.h"
+// #include "util/stream/zlib_output_stream.h"
 
 #if BUILDFLAG(IS_ANDROID)
 #include <android/log.h>
@@ -80,22 +80,23 @@ class Logger final : public LogOutputStream::Delegate {
 };
 
 bool WriteMinidumpLogFromFile(FileReaderInterface* file_reader) {
-  ZlibOutputStream stream(
-      ZlibOutputStream::Mode::kCompress,
-      std::make_unique<Base94OutputStream>(
-          Base94OutputStream::Mode::kEncode,
-          std::make_unique<LogOutputStream>(std::make_unique<Logger>())));
-  FileOperationResult read_result;
-  do {
-    uint8_t buffer[4096];
-    read_result = file_reader->Read(buffer, sizeof(buffer));
-    if (read_result < 0)
-      return false;
+  // ZlibOutputStream stream(
+  //     ZlibOutputStream::Mode::kCompress,
+  //     std::make_unique<Base94OutputStream>(
+  //         Base94OutputStream::Mode::kEncode,
+  //         std::make_unique<LogOutputStream>(std::make_unique<Logger>())));
+  // FileOperationResult read_result;
+  // do {
+  //   uint8_t buffer[4096];
+  //   read_result = file_reader->Read(buffer, sizeof(buffer));
+  //   if (read_result < 0)
+  //     return false;
 
-    if (read_result > 0 && (!stream.Write(buffer, read_result)))
-      return false;
-  } while (read_result > 0);
-  return stream.Flush();
+  //   if (read_result > 0 && (!stream.Write(buffer, read_result)))
+  //     return false;
+  // } while (read_result > 0);
+  // return stream.Flush();
+  return true;
 }
 
 }  // namespace
@@ -300,23 +301,24 @@ bool CrashReportExceptionHandler::WriteMinidumpToDatabase(
 bool CrashReportExceptionHandler::WriteMinidumpToLog(
     ProcessSnapshotLinux* process_snapshot,
     ProcessSnapshotSanitized* sanitized_snapshot) {
-  ProcessSnapshot* snapshot =
-      sanitized_snapshot ? implicit_cast<ProcessSnapshot*>(sanitized_snapshot)
-                         : implicit_cast<ProcessSnapshot*>(process_snapshot);
-  MinidumpFileWriter minidump;
-  minidump.InitializeFromSnapshot(snapshot);
-  AddUserExtensionStreams(user_stream_data_sources_, snapshot, &minidump);
+  // ProcessSnapshot* snapshot =
+  //     sanitized_snapshot ? implicit_cast<ProcessSnapshot*>(sanitized_snapshot)
+  //                        : implicit_cast<ProcessSnapshot*>(process_snapshot);
+  // MinidumpFileWriter minidump;
+  // minidump.InitializeFromSnapshot(snapshot);
+  // AddUserExtensionStreams(user_stream_data_sources_, snapshot, &minidump);
 
-  OutputStreamFileWriter writer(std::make_unique<ZlibOutputStream>(
-      ZlibOutputStream::Mode::kCompress,
-      std::make_unique<Base94OutputStream>(
-          Base94OutputStream::Mode::kEncode,
-          std::make_unique<LogOutputStream>(std::make_unique<Logger>()))));
-  if (!minidump.WriteMinidump(&writer, false /* allow_seek */)) {
-    LOG(ERROR) << "WriteMinidump failed";
-    return false;
-  }
-  return writer.Flush();
+  // OutputStreamFileWriter writer(std::make_unique<ZlibOutputStream>(
+  //     ZlibOutputStream::Mode::kCompress,
+  //     std::make_unique<Base94OutputStream>(
+  //         Base94OutputStream::Mode::kEncode,
+  //         std::make_unique<LogOutputStream>(std::make_unique<Logger>()))));
+  // if (!minidump.WriteMinidump(&writer, false /* allow_seek */)) {
+  //   LOG(ERROR) << "WriteMinidump failed";
+  //   return false;
+  // }
+  // return writer.Flush();
+  return true;
 }
 
 }  // namespace crashpad

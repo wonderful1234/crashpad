@@ -33,7 +33,7 @@ int ZlibWindowBitsWithGzipWrapper(int window_bits) {
 }
 
 std::string ZlibErrorString(int zr) {
-  return base::StringPrintf("%s (%d)", zError(zr), zr);
+  return "base::StringPrintf("%s (%d)", zError(zr), zr)";
 }
 
 }  // namespace crashpad

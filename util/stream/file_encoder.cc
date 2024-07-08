@@ -23,7 +23,7 @@
 #include "util/stream/base94_output_stream.h"
 #include "util/stream/file_output_stream.h"
 #include "util/stream/output_stream_interface.h"
-#include "util/stream/zlib_output_stream.h"
+// #include "util/stream/zlib_output_stream.h"
 
 namespace crashpad {
 
@@ -44,40 +44,40 @@ bool FileEncoder::Process() {
   // Remove the output file on failure.
   file_remover.reset(output_path_);
 
-  std::unique_ptr<OutputStreamInterface> output;
-  if (mode_ == Mode::kEncode) {
-    output = std::make_unique<ZlibOutputStream>(
-        ZlibOutputStream::Mode::kCompress,
-        std::make_unique<Base94OutputStream>(
-            Base94OutputStream::Mode::kEncode,
-            std::make_unique<FileOutputStream>(write_handle.get())));
-  } else {
-    output = std::make_unique<Base94OutputStream>(
-        Base94OutputStream::Mode::kDecode,
-        std::make_unique<ZlibOutputStream>(
-            ZlibOutputStream::Mode::kDecompress,
-            std::make_unique<FileOutputStream>(write_handle.get())));
-  }
+  // std::unique_ptr<OutputStreamInterface> output;
+  // if (mode_ == Mode::kEncode) {
+  //   output = std::make_unique<ZlibOutputStream>(
+  //       ZlibOutputStream::Mode::kCompress,
+  //       std::make_unique<Base94OutputStream>(
+  //           Base94OutputStream::Mode::kEncode,
+  //           std::make_unique<FileOutputStream>(write_handle.get())));
+  // } else {
+  //   output = std::make_unique<Base94OutputStream>(
+  //       Base94OutputStream::Mode::kDecode,
+  //       std::make_unique<ZlibOutputStream>(
+  //           ZlibOutputStream::Mode::kDecompress,
+  //           std::make_unique<FileOutputStream>(write_handle.get())));
+  // }
 
-  FileReader file_reader;
-  if (!file_reader.Open(input_path_))
-    return false;
+  // FileReader file_reader;
+  // if (!file_reader.Open(input_path_))
+  //   return false;
 
-  FileOperationResult read_result;
-  do {
-    uint8_t buffer[4096];
-    read_result = file_reader.Read(buffer, sizeof(buffer));
-    if (read_result < 0)
-      return false;
+  // FileOperationResult read_result;
+  // do {
+  //   uint8_t buffer[4096];
+  //   read_result = file_reader.Read(buffer, sizeof(buffer));
+  //   if (read_result < 0)
+  //     return false;
 
-    if (read_result > 0 && (!output->Write(buffer, read_result)))
-      return false;
-  } while (read_result > 0);
+  //   if (read_result > 0 && (!output->Write(buffer, read_result)))
+  //     return false;
+  // } while (read_result > 0);
 
-  if (!output->Flush())
-    return false;
+  // if (!output->Flush())
+  //   return false;
 
-  std::ignore = file_remover.release();
+  // std::ignore = file_remover.release();
   return true;
 }
 

@@ -58,15 +58,15 @@ set(CRASHPAD_UTIL_LIBRARY_FILES
     ./misc/uuid.h
     ./misc/zlib.cc
     ./misc/zlib.h
-    ./net/http_body_gzip.cc
-    ./net/http_body_gzip.h
+    # ./net/http_body_gzip.cc
+    # ./net/http_body_gzip.h
     ./net/http_body.cc
     ./net/http_body.h
     ./net/http_headers.h
-    ./net/http_multipart_builder.cc
-    ./net/http_multipart_builder.h
-    ./net/http_transport.cc
-    ./net/http_transport.h
+    # ./net/http_multipart_builder.cc
+    # ./net/http_multipart_builder.h
+    # ./net/http_transport.cc
+    # ./net/http_transport.h
     ./net/url.cc
     ./net/url.h
     ./numeric/checked_address_range.cc
@@ -104,8 +104,8 @@ set(CRASHPAD_UTIL_LIBRARY_FILES
     ./stream/output_stream_interface.h
     ./stream/test_output_stream.cc
     ./stream/test_output_stream.h
-    ./stream/zlib_output_stream.cc
-    ./stream/zlib_output_stream.h
+    #./stream/zlib_output_stream.cc
+    #./stream/zlib_output_stream.h
     ./string/split_string.cc
     ./string/split_string.h
     ./synchronization/semaphore.h
@@ -337,7 +337,7 @@ endif (WIN32)
 #     endif ()
 # endif (LINUX)
 
-find_package(ZLIB)
+# find_package(ZLIB)
 if (ANDROID)
     list(APPEND CRASHPAD_UTIL_LIBRARY_FILES
         ./backtrace/android_cert_store.cc
@@ -419,7 +419,7 @@ if (WIN32)
 endif (WIN32)
 
 target_include_directories(util PUBLIC ..)
-target_link_libraries(util PUBLIC mini_chromium ZLIB::ZLIB backtrace_common)
+target_link_libraries(util PUBLIC mini_chromium  backtrace_common)
 
 # if (LINUX AND NOT ANDROID)
 #     if (OPENSSL_FOUND)

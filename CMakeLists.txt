@@ -20,7 +20,7 @@ if (LINUX)
     find_package(Threads REQUIRED)
 endif (LINUX)
 
-find_package(ZLIB)
+# find_package(ZLIB)
 
 add_library(backtrace_common INTERFACE)
 
@@ -29,15 +29,15 @@ target_compile_definitions(backtrace_common INTERFACE
     MINI_CHROMIUM_INTERNAL_BUILDFLAG_VALUE_IS_CHROMEOS_LACROS=MINI_CHROMIUM_INTERNAL_BUILDFLAG_VALUE_IS_CHROMEOS
 )
 
-if (NOT ZLIB_FOUND)
-    add_subdirectory(third_party/zlib)
-    add_library(ZLIB::ZLIB ALIAS zlib)
-    target_compile_definitions(backtrace_common INTERFACE
-        CRASHPAD_INCLUDES CRASHPAD_ZLIB_SOURCE_EMBEDDED)
-else()
-    target_compile_definitions(backtrace_common INTERFACE
-        CRASHPAD_INCLUDES CRASHPAD_ZLIB_SOURCE_SYSTEM)
-endif()
+# if (NOT ZLIB_FOUND)
+#     add_subdirectory(third_party/zlib)
+#     add_library(ZLIB::ZLIB ALIAS zlib)
+#     target_compile_definitions(backtrace_common INTERFACE
+#         CRASHPAD_INCLUDES CRASHPAD_ZLIB_SOURCE_EMBEDDED)
+# else()
+#     target_compile_definitions(backtrace_common INTERFACE
+#         CRASHPAD_INCLUDES CRASHPAD_ZLIB_SOURCE_SYSTEM)
+# endif()
 
 target_compile_definitions(backtrace_common INTERFACE
     CRASHPAD_LSS_SOURCE_EMBEDDED)
