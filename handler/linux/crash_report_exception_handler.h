@@ -19,7 +19,7 @@
 #include <string>
 
 #include "client/crash_report_database.h"
-#include "handler/crash_report_upload_thread.h"
+// #include "handler/crash_report_upload_thread.h"
 #include "handler/linux/exception_handler_server.h"
 #include "handler/user_stream_data_source.h"
 #include "util/linux/exception_handler_protocol.h"
@@ -64,7 +64,7 @@ class CrashReportExceptionHandler : public ExceptionHandlerServer::Delegate {
   //!     minidump streams. `nullptr` if not required.
   CrashReportExceptionHandler(
       CrashReportDatabase* database,
-      CrashReportUploadThread* upload_thread,
+    //   CrashReportUploadThread* upload_thread,
       const std::map<std::string, std::string>* process_annotations,
       const std::vector<base::FilePath>* attachments,
       bool write_minidump_to_database,
@@ -110,7 +110,7 @@ class CrashReportExceptionHandler : public ExceptionHandlerServer::Delegate {
                           ProcessSnapshotSanitized* sanitized_snapshot);
 
   CrashReportDatabase* database_;  // weak
-  CrashReportUploadThread* upload_thread_;  // weak
+//   CrashReportUploadThread* upload_thread_;  // weak
   const std::map<std::string, std::string>* process_annotations_;  // weak
   const std::vector<base::FilePath>* attachments_;  // weak
   bool write_minidump_to_database_;

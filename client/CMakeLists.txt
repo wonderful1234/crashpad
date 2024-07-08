@@ -1,23 +1,26 @@
+set(INSTALL_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib" CACHE PATH "Installation directory for libraries")
+set(INSTALL_INC_DIR_CLIENT "${CMAKE_INSTALL_PREFIX}/include/client" CACHE PATH "Installation directory for headers")
+
 set(CRASHPAD_CLIENT_LIBRARY_FILES
     annotation_list.cc
-    annotation_list.h
     annotation.cc
-    annotation.h
     crash_report_database.cc
+    crashpad_info.cc
+    prune_crash_reports.cc
+    settings.cc
+)
+set(CRASHPAD_CLIENT_LIBRARY_FILES_HEADERS
+    annotation_list.h
+    annotation.h
     crash_report_database.h
     crashpad_client.h
-    crashpad_info.cc
     crashpad_info.h
-    ios_handler
-    prune_crash_reports.cc
     prune_crash_reports.h
-    settings.cc
     settings.h
     simple_address_range_bag.h
     simple_string_dictionary.h
     simulate_crash.h
 )
-
 if (APPLE)
     list(APPEND CRASHPAD_CLIENT_LIBRARY_FILES
         crash_report_database_mac.mm
@@ -30,11 +33,12 @@ endif (APPLE)
 if (LINUX)
     list(APPEND CRASHPAD_CLIENT_LIBRARY_FILES
         client_argv_handling.cc
-        client_argv_handling.h
         crash_report_database_generic.cc
         crashpad_client_linux.cc
-        crashpad_info_note.S
         pthread_create_linux.cc
+    )
+    list(APPEND CRASHPAD_CLIENT_LIBRARY_FILES_HEADERS
+        client_argv_handling.h
     )
 endif (LINUX)
 
@@ -45,7 +49,7 @@ if (WIN32)
     )
 endif (WIN32)
 
-add_library(client STATIC ${CRASHPAD_CLIENT_LIBRARY_FILES})
+add_library(client STATIC ${CRASHPAD_CLIENT_LIBRARY_FILES} ${CRASHPAD_CLIENT_LIBRARY_FILES_HEADERS})
 
 target_compile_features(client PUBLIC cxx_std_14)
 
@@ -55,3 +59,6 @@ target_include_directories(client PUBLIC ..)
 if (LINUX)
     target_link_libraries(client PUBLIC Threads::Threads)
 endif (LINUX)
+install(TARGETS client
+        ARCHIVE DESTINATION "${INSTALL_LIB_DIR}" )
+install(FILES ${CRASHPAD_CLIENT_LIBRARY_FILES_HEADERS} DESTINATION "${INSTALL_INC_DIR_CLIENT}")

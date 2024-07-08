@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(backtrace_crashpad LANGUAGES C CXX)
 cmake_policy(SET CMP0077 NEW)
-
+SET(CMAKE_CXX_FLAGS "-O2")
 if (UNIX AND NOT APPLE)
     set(LINUX TRUE)
 endif()
@@ -50,7 +50,7 @@ if (ANDROID)
 elseif (APPLE)
     # do nothing
 elseif (LINUX)
-    find_package(CURL)
+    # find_package(CURL)
 else()
     set(OPENSSL_USE_STATIC_LIBS TRUE)
     find_package(OpenSSL)

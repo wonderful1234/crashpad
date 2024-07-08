@@ -1,6 +1,6 @@
 set(CRASHPAD_HANDLER_LIBRARY_FILES
-    crash_report_upload_thread.cc
-    crash_report_upload_thread.h
+    # crash_report_upload_thread.cc
+    # crash_report_upload_thread.h
     handler_main.cc
     minidump_to_upload_parameters.cc
     minidump_to_upload_parameters.h

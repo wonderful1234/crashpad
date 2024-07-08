@@ -184,6 +184,8 @@ class CrashReportUploadThread : public WorkerThread::Delegate,
   //!
   //! \return A member of UploadResult indicating the result of the upload
   //!    attempt.
+
+  // core upload
   UploadResult UploadReport(const CrashReportDatabase::UploadReport* report,
                             std::string* response_body);
 

@@ -1,3 +1,5 @@
+set(INSTALL_INC_DIR_COMPAT "${CMAKE_INSTALL_PREFIX}/include/compat" CACHE PATH "Installation directory for headers")
+
 set(CRASHPAD_COMPAT_LIBRARY_FILES
     ./linux/signal.h
     ./mac/Availability.h
@@ -13,6 +15,11 @@ set(CRASHPAD_COMPAT_LIBRARY_FILES
     ./non_win/verrsrc.h
     ./non_win/windows.h
     ./non_win/winnt.h
+)
+
+set(CRASHPAD_COMPAT_LIBRARY_FILES_HEADERS
+    ./linux
+    ./non_win
 )
 
 if (ANDROID)
@@ -74,3 +81,4 @@ else ()
     target_include_directories(compat_incl INTERFACE non_win)
 endif (WIN32)
 
+install(DIRECTORY ${CRASHPAD_COMPAT_LIBRARY_FILES_HEADERS} DESTINATION "${INSTALL_INC_DIR_COMPAT}")

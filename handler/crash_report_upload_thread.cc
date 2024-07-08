@@ -278,6 +278,7 @@ void CrashReportUploadThread::ProcessPendingReport(
   }
 }
 
+//core upload
 CrashReportUploadThread::UploadResult CrashReportUploadThread::UploadReport(
     const CrashReportDatabase::UploadReport* report,
     std::string* response_body) {

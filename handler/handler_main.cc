@@ -43,7 +43,7 @@
 #include "client/crashpad_info.h"
 #include "client/prune_crash_reports.h"
 #include "client/simple_string_dictionary.h"
-#include "handler/crash_report_upload_thread.h"
+// #include "handler/crash_report_upload_thread.h"
 #include "handler/prune_crash_reports_thread.h"
 #include "tools/tool_support.h"
 #include "util/file/file_io.h"
@@ -1015,25 +1015,25 @@ int HandlerMain(int argc,
     return ExitFailure();
   }
 
-  ScopedStoppable upload_thread;
-  if (!options.url.empty()) {
-    // TODO(scottmg): options.rate_limit should be removed when we have a
-    // configurable database setting to control upload limiting.
-    // See https://crashpad.chromium.org/bug/23.
-    CrashReportUploadThread::Options upload_thread_options;
-    upload_thread_options.identify_client_via_url =
-        options.identify_client_via_url;
-    upload_thread_options.rate_limit = options.rate_limit;
-    upload_thread_options.upload_gzip = options.upload_gzip;
-    upload_thread_options.watch_pending_reports = options.periodic_tasks;
+  // ScopedStoppable upload_thread;
+  // if (!options.url.empty()) {
+  //   // TODO(scottmg): options.rate_limit should be removed when we have a
+  //   // configurable database setting to control upload limiting.
+  //   // See https://crashpad.chromium.org/bug/23.
+  //   CrashReportUploadThread::Options upload_thread_options;
+  //   upload_thread_options.identify_client_via_url =
+  //       options.identify_client_via_url;
+  //   upload_thread_options.rate_limit = options.rate_limit;
+  //   upload_thread_options.upload_gzip = options.upload_gzip;
+  //   upload_thread_options.watch_pending_reports = options.periodic_tasks;
 
-    upload_thread.Reset(new CrashReportUploadThread(
-        database.get(),
-        options.url,
-        upload_thread_options,
-        CrashReportUploadThread::ProcessPendingReportsObservationCallback()));
-    upload_thread.Get()->Start();
-  }
+  //   upload_thread.Reset(new CrashReportUploadThread(
+  //       database.get(),
+  //       options.url,
+  //       upload_thread_options,
+  //       CrashReportUploadThread::ProcessPendingReportsObservationCallback()));
+  //   upload_thread.Get()->Start();
+  // }
 
 #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID)
   std::unique_ptr<ExceptionHandlerServer::Delegate> exception_handler;
@@ -1042,35 +1042,35 @@ int HandlerMain(int argc,
 #endif
 
 #if BUILDFLAG(IS_CHROMEOS_ASH) || BUILDFLAG(IS_CHROMEOS_LACROS)
-  if (options.use_cros_crash_reporter) {
-    auto cros_handler = std::make_unique<CrosCrashReportExceptionHandler>(
-        database.get(),
-        &options.annotations,
-        user_stream_sources);
+  // if (options.use_cros_crash_reporter) {
+  //   auto cros_handler = std::make_unique<CrosCrashReportExceptionHandler>(
+  //       database.get(),
+  //       &options.annotations,
+  //       user_stream_sources);
 
-    if (!options.minidump_dir_for_tests.empty()) {
-      cros_handler->SetDumpDir(options.minidump_dir_for_tests);
-    }
+  //   if (!options.minidump_dir_for_tests.empty()) {
+  //     cros_handler->SetDumpDir(options.minidump_dir_for_tests);
+  //   }
 
-    if (options.always_allow_feedback) {
-      cros_handler->SetAlwaysAllowFeedback();
-    }
+  //   if (options.always_allow_feedback) {
+  //     cros_handler->SetAlwaysAllowFeedback();
+  //   }
 
-    exception_handler = std::move(cros_handler);
-  } else {
-    exception_handler = std::make_unique<CrashReportExceptionHandler>(
-        database.get(),
-        static_cast<CrashReportUploadThread*>(upload_thread.Get()),
-        &options.annotations,
-        &options.attachments,
-        true,
-        false,
-        user_stream_sources);
-  }
+  //   exception_handler = std::move(cros_handler);
+  // } else {
+  //   exception_handler = std::make_unique<CrashReportExceptionHandler>(
+  //       database.get(),
+  //       static_cast<CrashReportUploadThread*>(upload_thread.Get()),
+  //       &options.annotations,
+  //       &options.attachments,
+  //       true,
+  //       false,
+  //       user_stream_sources);
+  // }
 #else
   exception_handler = std::make_unique<CrashReportExceptionHandler>(
       database.get(),
-      static_cast<CrashReportUploadThread*>(upload_thread.Get()),
+      // static_cast<CrashReportUploadThread*>(upload_thread.Get()),
       &options.annotations,
 #if defined(ATTACHMENTS_SUPPORTED)
       &options.attachments,

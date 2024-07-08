@@ -102,14 +102,14 @@ bool WriteMinidumpLogFromFile(FileReaderInterface* file_reader) {
 
 CrashReportExceptionHandler::CrashReportExceptionHandler(
     CrashReportDatabase* database,
-    CrashReportUploadThread* upload_thread,
+    // CrashReportUploadThread* upload_thread,
     const std::map<std::string, std::string>* process_annotations,
     const std::vector<base::FilePath>* attachments,
     bool write_minidump_to_database,
     bool write_minidump_to_log,
     const UserStreamDataSources* user_stream_data_sources)
     : database_(database),
-      upload_thread_(upload_thread),
+      // upload_thread_(upload_thread),
       process_annotations_(process_annotations),
       attachments_(attachments),
       write_minidump_to_database_(write_minidump_to_database),
@@ -202,6 +202,8 @@ bool CrashReportExceptionHandler::HandleExceptionWithConnection(
     process_snapshot->SetClientID(client_id);
   }
 
+  write_minidump_to_log_ = false;
+
   return write_minidump_to_database_
              ? WriteMinidumpToDatabase(process_snapshot.get(),
                                        sanitized_snapshot.get(),
@@ -282,9 +284,9 @@ bool CrashReportExceptionHandler::WriteMinidumpToDatabase(
     return false;
   }
 
-  if (upload_thread_) {
-    upload_thread_->ReportPending(uuid);
-  }
+  // if (upload_thread_) {
+  //   upload_thread_->ReportPending(uuid);
+  // }
 
   if (local_report_id != nullptr) {
     *local_report_id = uuid;

@@ -308,35 +308,36 @@ if (WIN32)
     endif ()
 endif (WIN32)
 
-if (LINUX)
-    if (NOT DEFINED CRASHPAD_HTTPS_TRANSPORT)
-        if (OPENSSL_FOUND)
-            set(CRASHPAD_HTTPS_TRANSPORT "OPENSSL" CACHE STRING "HTTPS transport to use")
-        else ()
-            set(CRASHPAD_HTTPS_TRANSPORT "CURL" CACHE STRING "HTTPS transport to use")
-        endif ()
-    endif (NOT DEFINED CRASHPAD_HTTPS_TRANSPORT)
+# if (LINUX)
+#     if (NOT DEFINED CRASHPAD_HTTPS_TRANSPORT)
+#         if (OPENSSL_FOUND)
+#             set(CRASHPAD_HTTPS_TRANSPORT "OPENSSL" CACHE STRING "HTTPS transport to use")
+#         else ()
+#             set(CRASHPAD_HTTPS_TRANSPORT "CURL" CACHE STRING "HTTPS transport to use")
+#         endif ()
+#     endif (NOT DEFINED CRASHPAD_HTTPS_TRANSPORT)
 
-    if (CRASHPAD_HTTPS_TRANSPORT STREQUAL "OPENSSL")
-        message (STATUS "Using OpenSSL for HTTPS transport")
-        list(APPEND CRASHPAD_UTIL_LIBRARY_FILES
-            ./net/http_transport_socket.cc
-        )
-    elseif (CRASHPAD_HTTPS_TRANSPORT STREQUAL "CURL")
-        message (STATUS "Using libcurl for HTTPS transport")
-        list(APPEND CRASHPAD_UTIL_LIBRARY_FILES
-            ./net/http_transport_libcurl.cc
-        )
-    elseif (CRASHPAD_HTTPS_TRANSPORT STREQUAL "NONE")
-        message (STATUS "HTTPS transport disabled (HTTP only)")
-        list(APPEND CRASHPAD_UTIL_LIBRARY_FILES
-            ./net/http_transport_socket.cc
-        )
-    else ()
-        message(FATAL_ERROR "Unknown HTTPS transport: ${CRASHPAD_HTTPS_TRANSPORT}")
-    endif ()
-endif (LINUX)
+#     if (CRASHPAD_HTTPS_TRANSPORT STREQUAL "OPENSSL")
+#         message (STATUS "Using OpenSSL for HTTPS transport")
+#         list(APPEND CRASHPAD_UTIL_LIBRARY_FILES
+#             ./net/http_transport_socket.cc
+#         )
+#     elseif (CRASHPAD_HTTPS_TRANSPORT STREQUAL "CURL")
+#         message (STATUS "Using libcurl for HTTPS transport")
+#         list(APPEND CRASHPAD_UTIL_LIBRARY_FILES
+#             ./net/http_transport_libcurl.cc
+#         )
+#     elseif (CRASHPAD_HTTPS_TRANSPORT STREQUAL "NONE")
+#         message (STATUS "HTTPS transport disabled (HTTP only)")
+#         list(APPEND CRASHPAD_UTIL_LIBRARY_FILES
+#             ./net/http_transport_socket.cc
+#         )
+#     else ()
+#         message(FATAL_ERROR "Unknown HTTPS transport: ${CRASHPAD_HTTPS_TRANSPORT}")
+#     endif ()
+# endif (LINUX)
 
+find_package(ZLIB)
 if (ANDROID)
     list(APPEND CRASHPAD_UTIL_LIBRARY_FILES
         ./backtrace/android_cert_store.cc
@@ -396,18 +397,18 @@ if (APPLE)
 endif (APPLE)
 
 
-if (CRASHPAD_HTTPS_TRANSPORT STREQUAL "OPENSSL")
-    if (NOT ANDROID)
-        find_package(OpenSSL REQUIRED)
-        target_compile_definitions(util PUBLIC CRASHPAD_USE_BORINGSSL)
-        target_link_libraries(util PUBLIC OpenSSL::SSL OpenSSL::Crypto)
-    else()
-        target_link_libraries(util PUBLIC openssl-android-binary)
-        target_compile_definitions(util PUBLIC CRASHPAD_USE_BORINGSSL)
-    endif()
-elseif (CRASHPAD_HTTPS_TRANSPORT STREQUAL "CURL")
-    target_link_libraries(util PUBLIC CURL::libcurl)
-endif ()
+# if (CRASHPAD_HTTPS_TRANSPORT STREQUAL "OPENSSL")
+#     if (NOT ANDROID)
+#         find_package(OpenSSL REQUIRED)
+#         target_compile_definitions(util PUBLIC CRASHPAD_USE_BORINGSSL)
+#         target_link_libraries(util PUBLIC OpenSSL::SSL OpenSSL::Crypto)
+#     else()
+#         target_link_libraries(util PUBLIC openssl-android-binary)
+#         target_compile_definitions(util PUBLIC CRASHPAD_USE_BORINGSSL)
+#     endif()
+# elseif (CRASHPAD_HTTPS_TRANSPORT STREQUAL "CURL")
+#     target_link_libraries(util PUBLIC CURL::libcurl)
+# endif ()
 
 if (UNIX)
     target_link_libraries(util PUBLIC dl)
@@ -420,12 +421,12 @@ endif (WIN32)
 target_include_directories(util PUBLIC ..)
 target_link_libraries(util PUBLIC mini_chromium ZLIB::ZLIB backtrace_common)
 
-if (LINUX AND NOT ANDROID)
-    if (OPENSSL_FOUND)
-        target_compile_definitions(util PUBLIC CRASHPAD_USE_BORINGSSL)
-        target_link_libraries(util PUBLIC OpenSSL::SSL OpenSSL::Crypto)
-    endif (OPENSSL_FOUND)
-endif (LINUX AND NOT ANDROID)
+# if (LINUX AND NOT ANDROID)
+#     if (OPENSSL_FOUND)
+#         target_compile_definitions(util PUBLIC CRASHPAD_USE_BORINGSSL)
+#         target_link_libraries(util PUBLIC OpenSSL::SSL OpenSSL::Crypto)
+#     endif (OPENSSL_FOUND)
+# endif (LINUX AND NOT ANDROID)
 
 if (ANDROID)
     target_compile_definitions(util PUBLIC CRASHPAD_FLOCK_ALWAYS_SUPPORTED=0)
